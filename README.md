@@ -171,6 +171,15 @@ This project demonstrates:
 - Real-time visualization
 - Turn-based gameplay mechanics
 
+## Contributor
+Bishal Roy
+2007098
+CSE,KUET
+
+Iqbal Mahamud
+2007093
+CSE,KUET
+
 ## License
 
 This is an educational project demonstrating AI algorithms in game development.
