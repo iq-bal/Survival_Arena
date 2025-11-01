@@ -5,7 +5,7 @@ WINDOW_WIDTH = 1400
 WINDOW_HEIGHT = 900
 GRID_SIZE = 20
 CELL_SIZE = 35  # pixels per cell
-FPS = 5  # Slower speed for better AI watching
+FPS = 0.5  # Slower speed for better AI watching
 
 # Layout Settings
 GRID_WIDTH = 700  # Width of the game grid area
