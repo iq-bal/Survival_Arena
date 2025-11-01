@@ -1,11 +1,19 @@
 # Game Constants and Configuration
 
 # Window Settings
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 800
+WINDOW_WIDTH = 1400
+WINDOW_HEIGHT = 900
 GRID_SIZE = 20
-CELL_SIZE = 40  # pixels per cell
+CELL_SIZE = 35  # pixels per cell
 FPS = 10
+
+# Layout Settings
+GRID_WIDTH = 700  # Width of the game grid area
+GRID_HEIGHT = 700  # Height of the game grid area
+GRID_OFFSET_X = 20
+GRID_OFFSET_Y = 180
+SIDEBAR_X = 750  # X position where sidebar starts
+SIDEBAR_WIDTH = 630
 
 # Game Limits
 MAX_HEALTH = 100
@@ -24,33 +32,42 @@ MAX_TURNS = 50
 ENEMY_DAMAGE = 20
 PLAYER_COLLISION_DAMAGE = 10
 
-# Color Scheme
+# Color Scheme (Modern UI)
 COLORS = {
-    'background': (40, 40, 40),
-    'grid_lines': (60, 60, 60),
-    'empty': (50, 50, 50),
-    'obstacle': (80, 80, 80),
+    # Main background
+    'background': (240, 242, 248),  # Light gray-blue
+    'border': (100, 110, 200),      # Purple-blue border
 
-    # Players
-    'player1': (50, 120, 255),      # Blue
-    'player2': (255, 50, 50),       # Red
+    # Grid
+    'grid_bg': (220, 225, 235),     # Light grid background
+    'grid_lines': (200, 205, 215),  # Subtle grid lines
+    'empty': (235, 238, 245),       # Empty cell
 
-    # Allies
-    'ally1': (100, 170, 255),       # Light blue
-    'ally2': (255, 100, 100),       # Light red
+    # Entities
+    'obstacle': (60, 65, 75),       # Dark gray walls
+    'player1': (255, 165, 50),      # Orange (emoji face)
+    'player2': (50, 180, 255),      # Cyan blue (second player)
+    'ally1': (100, 200, 255),       # Light blue ally
+    'ally2': (255, 140, 100),       # Light orange ally
+    'enemy': (220, 80, 100),        # Red-pink enemy
+    'health': (80, 220, 130),       # Green health
+    'coin': (255, 215, 70),         # Gold coin
 
-    # Enemies
-    'enemy': (200, 50, 200),        # Purple
+    # UI Cards
+    'card_purple': (110, 100, 220),     # Purple stat cards
+    'card_red': (240, 100, 110),        # Red enemy card
+    'card_yellow': (255, 235, 170),     # Yellow AI decision card
+    'card_info': (220, 240, 255),       # Light blue info card
+    'card_green': (60, 200, 180),       # Green restart button
 
-    # Resources
-    'health': (50, 255, 50),        # Green
-    'coin': (255, 215, 0),          # Gold
+    # Text colors
+    'text_white': (255, 255, 255),
+    'text_dark': (40, 45, 60),
+    'text_red': (220, 60, 80),
+    'text_blue': (80, 110, 220),
 
-    # UI
-    'text': (255, 255, 255),
-    'health_bar_bg': (100, 100, 100),
-    'health_bar': (50, 255, 50),
-    'ui_panel': (30, 30, 30),
+    # Title
+    'title_blue': (80, 110, 220),
 }
 
 # AI Parameters
