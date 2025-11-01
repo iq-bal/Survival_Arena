@@ -1,6 +1,6 @@
 """
 Pygame rendering system for the AI vs AI Survival Arena
-Modern UI design with cards and custom-drawn icons
+Modern UI design with custom PNG assets
 """
 
 import pygame
@@ -18,6 +18,7 @@ from constants import (
     COLORS,
     MAX_HEALTH,
 )
+from assets import get_assets
 
 
 class GameRenderer:
@@ -27,6 +28,9 @@ class GameRenderer:
         """Initialize the renderer."""
         self.screen = screen
         self.debug_mode = False
+
+        # Load all game assets (images)
+        self.assets = get_assets()
 
         # Initialize fonts
         pygame.font.init()
@@ -69,28 +73,18 @@ class GameRenderer:
 
     def _draw_title(self):
         """Draw the title with game controller icon."""
-        # Draw gamepad icon
-        icon_x = WINDOW_WIDTH // 2 - 150
-        icon_y = 35
-        self._draw_gamepad_icon(icon_x, icon_y, 35)
+        # Draw gamepad icon (image)
+        gamepad_icon = self.assets.get_ui_icon("gamepad")
+        if gamepad_icon:
+            icon_x = WINDOW_WIDTH // 2 - 150
+            icon_y = 33
+            self.screen.blit(gamepad_icon, (icon_x, icon_y))
 
         # Title text
         title_text = "Survival Arena"
         text_surface = self.title_font.render(title_text, True, COLORS["title_blue"])
         text_rect = text_surface.get_rect(center=(WINDOW_WIDTH // 2 + 50, 50))
         self.screen.blit(text_surface, text_rect)
-
-    def _draw_gamepad_icon(self, x, y, size):
-        """Draw a simple gamepad icon."""
-        # Main body
-        body_rect = pygame.Rect(x, y + 10, size, size - 10)
-        pygame.draw.rect(self.screen, COLORS["title_blue"], body_rect, border_radius=8)
-
-        # D-pad (left side)
-        pygame.draw.rect(self.screen, COLORS["text_white"], (x + 8, y + 18, 8, 8))
-
-        # Buttons (right side)
-        pygame.draw.circle(self.screen, COLORS["text_white"], (x + size - 10, y + 22), 4)
 
     def _draw_stat_cards(self, game):
         """Draw the stat cards at the top."""
@@ -136,10 +130,12 @@ class GameRenderer:
         card_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.screen, color, card_rect, border_radius=15)
 
-        # Icon (left side, vertically centered)
-        icon_x = x + 30
-        icon_y = y + height // 2
-        self._draw_icon(icon_x, icon_y, 18, icon_type, COLORS["text_white"])
+        # Icon (left side, vertically centered) - use image
+        icon_image = self.assets.get_ui_icon(icon_type)
+        if icon_image:
+            icon_x = x + 20
+            icon_y = y + height // 2 - 10  # Center the icon vertically
+            self.screen.blit(icon_image, (icon_x, icon_y))
 
         # Title (top, after icon)
         title_surface = self.card_title_font.render(title, True, COLORS["text_white"])
@@ -150,76 +146,6 @@ class GameRenderer:
         value_surface = self.card_value_font.render(value, True, COLORS["text_white"])
         value_rect = value_surface.get_rect(center=(x + width // 2 + 10, y + height - 20))
         self.screen.blit(value_surface, value_rect)
-
-    def _draw_icon(self, x, y, size, icon_type, color):
-        """Draw various icon types."""
-        if icon_type == "clock":
-            # Clock circle
-            pygame.draw.circle(self.screen, color, (x, y), size, 3)
-            # Clock hands
-            pygame.draw.line(self.screen, color, (x, y), (x, y - size + 5), 3)
-            pygame.draw.line(self.screen, color, (x, y), (x + size - 8, y - 5), 3)
-
-        elif icon_type == "heart":
-            # Heart shape (simplified)
-            points = [
-                (x, y + 5),
-                (x - 10, y - 5),
-                (x - 10, y - 12),
-                (x, y - 8),
-                (x + 10, y - 12),
-                (x + 10, y - 5),
-            ]
-            pygame.draw.polygon(self.screen, color, points)
-
-        elif icon_type == "heart2":
-            # Heart shape (variant for second player)
-            points = [
-                (x, y + 5),
-                (x - 10, y - 5),
-                (x - 10, y - 12),
-                (x, y - 8),
-                (x + 10, y - 12),
-                (x + 10, y - 5),
-            ]
-            pygame.draw.polygon(self.screen, color, points)
-
-        elif icon_type == "skull":
-            # Skull (circle with eyes)
-            pygame.draw.circle(self.screen, color, (x, y - 3), size - 5)
-            # Eyes
-            pygame.draw.circle(self.screen, COLORS["card_red"], (x - 6, y - 5), 4)
-            pygame.draw.circle(self.screen, COLORS["card_red"], (x + 6, y - 5), 4)
-            # Jaw
-            pygame.draw.rect(self.screen, color, (x - 8, y + 5, 16, 8))
-
-        elif icon_type == "brain":
-            # Brain (wavy circle)
-            pygame.draw.circle(self.screen, color, (x, y), size - 3, 3)
-            # Lines inside
-            pygame.draw.line(self.screen, color, (x - 8, y - 5), (x - 5, y + 5), 2)
-            pygame.draw.line(self.screen, color, (x + 5, y - 5), (x + 8, y + 5), 2)
-
-        elif icon_type == "star":
-            # Star shape
-            points = []
-            for i in range(10):
-                angle = math.pi * 2 * i / 10 - math.pi / 2
-                radius = size if i % 2 == 0 else size // 2
-                px = x + math.cos(angle) * radius
-                py = y + math.sin(angle) * radius
-                points.append((px, py))
-            pygame.draw.polygon(self.screen, color, points)
-
-        elif icon_type == "restart":
-            # Circular arrow
-            pygame.draw.arc(self.screen, color, (x - size, y - size, size * 2, size * 2), 0.5, 5.5, 4)
-            # Arrow head
-            pygame.draw.polygon(self.screen, color, [
-                (x + size - 3, y - size + 5),
-                (x + size + 5, y - size),
-                (x + size, y - size + 10)
-            ])
 
     def _draw_grid_container(self):
         """Draw the container for the grid."""
@@ -265,138 +191,85 @@ class GameRenderer:
         return (pixel_x, pixel_y)
 
     def _draw_obstacles(self, obstacles):
-        """Draw all obstacles as walls."""
+        """Draw all obstacles as walls using image."""
+        wall_image = self.assets.get_entity("wall")
+        if not wall_image:
+            return
+
         for obstacle in obstacles:
             x, y = self._grid_to_pixel(obstacle.position)
-            rect = pygame.Rect(
-                x - CELL_SIZE // 2 + 2, y - CELL_SIZE // 2 + 2,
-                CELL_SIZE - 4, CELL_SIZE - 4
-            )
-            pygame.draw.rect(self.screen, COLORS["obstacle"], rect, border_radius=5)
-            # Add texture lines
-            pygame.draw.line(self.screen, (80, 85, 95),
-                           (x - 8, y - 8), (x + 8, y - 8), 2)
-            pygame.draw.line(self.screen, (80, 85, 95),
-                           (x - 8, y), (x + 8, y), 2)
+            # Center the image
+            img_rect = wall_image.get_rect(center=(x, y))
+            self.screen.blit(wall_image, img_rect)
 
     def _draw_resources(self, resources):
-        """Draw all resources."""
+        """Draw all resources using images."""
+        health_image = self.assets.get_entity("health_pack")
+        coin_image = self.assets.get_entity("coin")
+
         for resource in resources:
             if resource.collected:
                 continue
 
             x, y = self._grid_to_pixel(resource.position)
 
-            if resource.type == "health":
-                # Green rounded square
-                bg_rect = pygame.Rect(
-                    x - CELL_SIZE // 2 + 3, y - CELL_SIZE // 2 + 3,
-                    CELL_SIZE - 6, CELL_SIZE - 6
-                )
-                pygame.draw.rect(self.screen, COLORS["health"], bg_rect, border_radius=8)
+            if resource.type == "health" and health_image:
+                img_rect = health_image.get_rect(center=(x, y))
+                self.screen.blit(health_image, img_rect)
 
-                # Draw cross/plus symbol
-                cross_size = 10
-                pygame.draw.rect(self.screen, COLORS["text_white"],
-                               (x - 2, y - cross_size, 4, cross_size * 2))
-                pygame.draw.rect(self.screen, COLORS["text_white"],
-                               (x - cross_size, y - 2, cross_size * 2, 4))
-
-            elif resource.type == "coin":
-                # Yellow rounded square
-                bg_rect = pygame.Rect(
-                    x - CELL_SIZE // 2 + 3, y - CELL_SIZE // 2 + 3,
-                    CELL_SIZE - 6, CELL_SIZE - 6
-                )
-                pygame.draw.rect(self.screen, COLORS["coin"], bg_rect, border_radius=8)
-
-                # Draw coin circle
-                pygame.draw.circle(self.screen, (255, 200, 0), (x, y), 10)
-                pygame.draw.circle(self.screen, COLORS["coin"], (x, y), 8)
-                # Dollar sign
-                dollar_surface = self.small_font.render("$", True, (200, 160, 0))
-                dollar_rect = dollar_surface.get_rect(center=(x, y))
-                self.screen.blit(dollar_surface, dollar_rect)
+            elif resource.type == "coin" and coin_image:
+                img_rect = coin_image.get_rect(center=(x, y))
+                self.screen.blit(coin_image, img_rect)
 
     def _draw_allies(self, allies):
-        """Draw all ally bots."""
+        """Draw all ally bots using images."""
+        ally_blue_image = self.assets.get_entity("ally_blue")
+        ally_red_image = self.assets.get_entity("ally_red")
+
         for ally in allies:
             x, y = self._grid_to_pixel(ally.position)
 
-            # Determine color based on owner
+            # Use appropriate image based on team
             if ally.owner.team == "Blue":
-                bg_color = COLORS["ally1"]  # Blue ally
+                ally_image = ally_blue_image
             else:
-                bg_color = COLORS["ally2"]  # Red ally
+                ally_image = ally_red_image
 
-            # Draw rounded square background
-            bg_rect = pygame.Rect(
-                x - CELL_SIZE // 2 + 3, y - CELL_SIZE // 2 + 3,
-                CELL_SIZE - 6, CELL_SIZE - 6
-            )
-            pygame.draw.rect(self.screen, bg_color, bg_rect, border_radius=8)
-
-            # Draw robot (simple geometric robot)
-            # Head
-            pygame.draw.rect(self.screen, COLORS["text_white"], (x - 6, y - 8, 12, 10), border_radius=2)
-            # Eyes
-            pygame.draw.circle(self.screen, bg_color, (x - 3, y - 5), 2)
-            pygame.draw.circle(self.screen, bg_color, (x + 3, y - 5), 2)
-            # Antenna
-            pygame.draw.line(self.screen, COLORS["text_white"], (x, y - 8), (x, y - 12), 2)
-            pygame.draw.circle(self.screen, COLORS["text_white"], (x, y - 12), 2)
+            if ally_image:
+                img_rect = ally_image.get_rect(center=(x, y))
+                self.screen.blit(ally_image, img_rect)
 
     def _draw_enemies(self, enemies):
-        """Draw all enemies."""
+        """Draw all enemies using image."""
+        enemy_image = self.assets.get_entity("enemy")
+        if not enemy_image:
+            return
+
         for enemy in enemies:
             x, y = self._grid_to_pixel(enemy.position)
-
-            # Draw rounded square background
-            bg_rect = pygame.Rect(
-                x - CELL_SIZE // 2 + 3, y - CELL_SIZE // 2 + 3,
-                CELL_SIZE - 6, CELL_SIZE - 6
-            )
-            pygame.draw.rect(self.screen, COLORS["enemy"], bg_rect, border_radius=8)
-
-            # Draw skull
-            # Head circle
-            pygame.draw.circle(self.screen, COLORS["text_white"], (x, y - 2), 10)
-            # Eyes (dark circles)
-            pygame.draw.circle(self.screen, COLORS["enemy"], (x - 4, y - 4), 3)
-            pygame.draw.circle(self.screen, COLORS["enemy"], (x + 4, y - 4), 3)
-            # Jaw
-            pygame.draw.rect(self.screen, COLORS["text_white"], (x - 6, y + 5, 12, 6), border_radius=2)
+            img_rect = enemy_image.get_rect(center=(x, y))
+            self.screen.blit(enemy_image, img_rect)
 
     def _draw_players(self, player1, player2):
-        """Draw both players."""
+        """Draw both players using images."""
+        player_blue_image = self.assets.get_entity("player_blue")
+        player_red_image = self.assets.get_entity("player_red")
+
         for player in [player1, player2]:
             if not player.alive:
                 continue
 
             x, y = self._grid_to_pixel(player.position)
 
-            # Draw rounded square background
-            bg_rect = pygame.Rect(
-                x - CELL_SIZE // 2 + 2, y - CELL_SIZE // 2 + 2,
-                CELL_SIZE - 4, CELL_SIZE - 4
-            )
-
-            # Use different colors for each player
+            # Use appropriate image based on team
             if player.team == "Blue":
-                bg_color = COLORS["player1"]  # Blue
+                player_image = player_blue_image
             else:
-                bg_color = COLORS["player2"]  # Red
+                player_image = player_red_image
 
-            pygame.draw.rect(self.screen, bg_color, bg_rect, border_radius=8)
-
-            # Draw smiley face
-            # Face circle
-            pygame.draw.circle(self.screen, (255, 240, 200), (x, y), 12)
-            # Eyes
-            pygame.draw.circle(self.screen, (50, 50, 50), (x - 5, y - 3), 2)
-            pygame.draw.circle(self.screen, (50, 50, 50), (x + 5, y - 3), 2)
-            # Smile
-            pygame.draw.arc(self.screen, (50, 50, 50), (x - 6, y - 2, 12, 10), 0.5, 2.6, 2)
+            if player_image:
+                img_rect = player_image.get_rect(center=(x, y))
+                self.screen.blit(player_image, img_rect)
 
     def _draw_sidebar(self, game):
         """Draw the right sidebar with info and controls."""
@@ -440,13 +313,15 @@ class GameRenderer:
         card_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.screen, COLORS["card_yellow"], card_rect, border_radius=12)
 
-        # Brain icon
-        self._draw_icon(x + 30, y + 40, 18, "brain", COLORS["text_red"])
+        # Brain icon (image)
+        brain_icon = self.assets.get_ui_icon("brain")
+        if brain_icon:
+            self.screen.blit(brain_icon, (x + 20, y + 30))
 
         # Title
         title = f"{team} AI"
         title_surface = self.small_font.render(title, True, COLORS["text_red"])
-        title_rect = title_surface.get_rect(midleft=(x + 60, y + 20))
+        title_rect = title_surface.get_rect(midleft=(x + 50, y + 20))
         self.screen.blit(title_surface, title_rect)
 
         # Decision value
@@ -464,8 +339,12 @@ class GameRenderer:
         card_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.screen, COLORS["card_purple"], card_rect, border_radius=12)
 
-        # Star icon
-        self._draw_icon(x + 30, y + height // 2, 15, "star", COLORS["text_white"])
+        # Star icon (image)
+        star_icon = self.assets.get_ui_icon("star")
+        if star_icon:
+            icon_x = x + 22
+            icon_y = y + height // 2 - 9
+            self.screen.blit(star_icon, (icon_x, icon_y))
 
         # Team name
         team_surface = self.small_font.render(f"{player.team} Score", True, COLORS["text_white"])
@@ -496,8 +375,12 @@ class GameRenderer:
         button_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.screen, COLORS["card_green"], button_rect, border_radius=12)
 
-        # Restart icon
-        self._draw_icon(x + 50, y + height // 2, 15, "restart", COLORS["text_white"])
+        # Restart icon (image)
+        restart_icon = self.assets.get_ui_icon("restart")
+        if restart_icon:
+            icon_x = x + 42
+            icon_y = y + height // 2 - 9
+            self.screen.blit(restart_icon, (icon_x, icon_y))
 
         # Text
         text = "Restart"
@@ -536,85 +419,29 @@ class GameRenderer:
             self.screen.blit(label_surface2, (x + col_width + 35, row_y + 5))
 
     def _draw_legend_icon(self, x, y, entity_type):
-        """Draw a small icon for the legend - matches game entity appearance."""
-        size = 18
+        """Draw a small icon for the legend using PNG images."""
+        # Map entity_type to asset name
+        asset_map = {
+            "player1": "player_blue",
+            "player2": "player_red",
+            "ally1": "ally_blue",
+            "ally2": "ally_red",
+            "enemy": "enemy",
+            "health": "health_pack",
+            "coin": "coin",
+            "wall": "wall"
+        }
 
-        if entity_type == "player1":
-            # Blue Player - Blue background with smiley (matches game)
-            bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
-            pygame.draw.rect(self.screen, COLORS["player1"], bg_rect, border_radius=4)
-            # Smiley face
-            pygame.draw.circle(self.screen, (255, 240, 200), (x, y), 6)
-            pygame.draw.circle(self.screen, (50, 50, 50), (x - 3, y - 2), 1)
-            pygame.draw.circle(self.screen, (50, 50, 50), (x + 3, y - 2), 1)
-            pygame.draw.arc(self.screen, (50, 50, 50), (x - 3, y - 1, 6, 5), 0.5, 2.6, 1)
+        asset_name = asset_map.get(entity_type)
+        if not asset_name:
+            return
 
-        elif entity_type == "player2":
-            # Red Player - Red background with smiley (matches game)
-            bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
-            pygame.draw.rect(self.screen, COLORS["player2"], bg_rect, border_radius=4)
-            # Smiley face
-            pygame.draw.circle(self.screen, (255, 240, 200), (x, y), 6)
-            pygame.draw.circle(self.screen, (50, 50, 50), (x - 3, y - 2), 1)
-            pygame.draw.circle(self.screen, (50, 50, 50), (x + 3, y - 2), 1)
-            pygame.draw.arc(self.screen, (50, 50, 50), (x - 3, y - 1, 6, 5), 0.5, 2.6, 1)
-
-        elif entity_type == "ally1":
-            # Blue Ally - Blue robot (matches game)
-            bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
-            pygame.draw.rect(self.screen, COLORS["ally1"], bg_rect, border_radius=4)
-            # Robot details
-            pygame.draw.rect(self.screen, COLORS["text_white"], (x - 3, y - 4, 6, 5), border_radius=1)
-            pygame.draw.circle(self.screen, COLORS["ally1"], (x - 2, y - 2), 1)
-            pygame.draw.circle(self.screen, COLORS["ally1"], (x + 2, y - 2), 1)
-            pygame.draw.line(self.screen, COLORS["text_white"], (x, y - 4), (x, y - 6), 1)
-            pygame.draw.circle(self.screen, COLORS["text_white"], (x, y - 6), 1)
-
-        elif entity_type == "ally2":
-            # Red Ally - Red robot (matches game)
-            bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
-            pygame.draw.rect(self.screen, COLORS["ally2"], bg_rect, border_radius=4)
-            # Robot details
-            pygame.draw.rect(self.screen, COLORS["text_white"], (x - 3, y - 4, 6, 5), border_radius=1)
-            pygame.draw.circle(self.screen, COLORS["ally2"], (x - 2, y - 2), 1)
-            pygame.draw.circle(self.screen, COLORS["ally2"], (x + 2, y - 2), 1)
-            pygame.draw.line(self.screen, COLORS["text_white"], (x, y - 4), (x, y - 6), 1)
-            pygame.draw.circle(self.screen, COLORS["text_white"], (x, y - 6), 1)
-
-        elif entity_type == "enemy":
-            # Enemy - Purple background with skull (matches game)
-            bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
-            pygame.draw.rect(self.screen, COLORS["enemy"], bg_rect, border_radius=4)
-            # Skull
-            pygame.draw.circle(self.screen, COLORS["text_white"], (x, y - 1), 5)
-            pygame.draw.circle(self.screen, COLORS["enemy"], (x - 2, y - 2), 2)
-            pygame.draw.circle(self.screen, COLORS["enemy"], (x + 2, y - 2), 2)
-            pygame.draw.rect(self.screen, COLORS["text_white"], (x - 3, y + 3, 6, 3), border_radius=1)
-
-        elif entity_type == "health":
-            # Health - Green background with cross (matches game)
-            bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
-            pygame.draw.rect(self.screen, COLORS["health"], bg_rect, border_radius=4)
-            # Cross
-            cross_size = 5
-            pygame.draw.rect(self.screen, COLORS["text_white"], (x - 1, y - cross_size, 2, cross_size * 2))
-            pygame.draw.rect(self.screen, COLORS["text_white"], (x - cross_size, y - 1, cross_size * 2, 2))
-
-        elif entity_type == "coin":
-            # Coin - Yellow background with coin circle (matches game)
-            bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
-            pygame.draw.rect(self.screen, COLORS["coin"], bg_rect, border_radius=4)
-            # Coin circle
-            pygame.draw.circle(self.screen, (255, 200, 0), (x, y), 5)
-            pygame.draw.circle(self.screen, COLORS["coin"], (x, y), 4)
-
-        elif entity_type == "wall":
-            # Wall - Gray square with texture (matches game)
-            bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
-            pygame.draw.rect(self.screen, COLORS["obstacle"], bg_rect, border_radius=3)
-            # Texture lines
-            pygame.draw.line(self.screen, (80, 85, 95), (x - 4, y - 4), (x + 4, y - 4), 1)
-            pygame.draw.line(self.screen, (80, 85, 95), (x - 4, y), (x + 4, y), 1)
+        # Get the legend icon
+        legend_icon = self.assets.get_legend_icon(asset_name)
+        if legend_icon:
+            # Center the icon at (x, y)
+            icon_rect = legend_icon.get_rect(center=(x, y))
+            self.screen.blit(legend_icon, icon_rect)
 
     def _draw_game_over(self, game):
         """Draw game over screen."""
