@@ -136,19 +136,19 @@ class GameRenderer:
         card_rect = pygame.Rect(x, y, width, height)
         pygame.draw.rect(self.screen, color, card_rect, border_radius=15)
 
-        # Icon
-        icon_x = x + 40
+        # Icon (left side, vertically centered)
+        icon_x = x + 30
         icon_y = y + height // 2
-        self._draw_icon(icon_x, icon_y, 20, icon_type, COLORS["text_white"])
+        self._draw_icon(icon_x, icon_y, 18, icon_type, COLORS["text_white"])
 
-        # Title
+        # Title (top, after icon)
         title_surface = self.card_title_font.render(title, True, COLORS["text_white"])
-        title_rect = title_surface.get_rect(midleft=(x + 70, y + 20))
+        title_rect = title_surface.get_rect(midleft=(x + 60, y + 18))
         self.screen.blit(title_surface, title_rect)
 
-        # Value
+        # Value (bottom, centered)
         value_surface = self.card_value_font.render(value, True, COLORS["text_white"])
-        value_rect = value_surface.get_rect(center=(x + width // 2 + 20, y + height // 2 + 5))
+        value_rect = value_surface.get_rect(center=(x + width // 2 + 10, y + height - 20))
         self.screen.blit(value_surface, value_rect)
 
     def _draw_icon(self, x, y, size, icon_type, color):
@@ -325,9 +325,9 @@ class GameRenderer:
 
             # Determine color based on owner
             if ally.owner.team == "Blue":
-                bg_color = COLORS["ally2"]  # Orange ally
-            else:
                 bg_color = COLORS["ally1"]  # Blue ally
+            else:
+                bg_color = COLORS["ally2"]  # Red ally
 
             # Draw rounded square background
             bg_rect = pygame.Rect(
@@ -383,9 +383,9 @@ class GameRenderer:
 
             # Use different colors for each player
             if player.team == "Blue":
-                bg_color = COLORS["player1"]  # Orange
+                bg_color = COLORS["player1"]  # Blue
             else:
-                bg_color = COLORS["player2"]  # Cyan
+                bg_color = COLORS["player2"]  # Red
 
             pygame.draw.rect(self.screen, bg_color, bg_rect, border_radius=8)
 
@@ -513,8 +513,8 @@ class GameRenderer:
     def _draw_legend(self, x, y):
         """Draw legend showing entity types."""
         legend_items = [
-            ("player1", "Blue Player", "ally2", "Blue Ally"),
-            ("player2", "Red Player", "ally1", "Red Ally"),
+            ("player1", "Blue Player", "ally1", "Blue Ally"),
+            ("player2", "Red Player", "ally2", "Red Ally"),
             ("enemy", "Enemy", "health", "Health"),
             ("coin", "Coin", "wall", "Wall")
         ]
@@ -540,7 +540,7 @@ class GameRenderer:
         size = 18
 
         if entity_type == "player1":
-            # Blue Player - Orange background with smiley (matches game)
+            # Blue Player - Blue background with smiley (matches game)
             bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
             pygame.draw.rect(self.screen, COLORS["player1"], bg_rect, border_radius=4)
             # Smiley face
@@ -550,7 +550,7 @@ class GameRenderer:
             pygame.draw.arc(self.screen, (50, 50, 50), (x - 3, y - 1, 6, 5), 0.5, 2.6, 1)
 
         elif entity_type == "player2":
-            # Red Player - Cyan background with smiley (matches game)
+            # Red Player - Red background with smiley (matches game)
             bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
             pygame.draw.rect(self.screen, COLORS["player2"], bg_rect, border_radius=4)
             # Smiley face
@@ -560,7 +560,7 @@ class GameRenderer:
             pygame.draw.arc(self.screen, (50, 50, 50), (x - 3, y - 1, 6, 5), 0.5, 2.6, 1)
 
         elif entity_type == "ally1":
-            # Red Ally - Blue robot (matches game)
+            # Blue Ally - Blue robot (matches game)
             bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
             pygame.draw.rect(self.screen, COLORS["ally1"], bg_rect, border_radius=4)
             # Robot details
@@ -571,7 +571,7 @@ class GameRenderer:
             pygame.draw.circle(self.screen, COLORS["text_white"], (x, y - 6), 1)
 
         elif entity_type == "ally2":
-            # Blue Ally - Orange robot (matches game)
+            # Red Ally - Red robot (matches game)
             bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
             pygame.draw.rect(self.screen, COLORS["ally2"], bg_rect, border_radius=4)
             # Robot details
@@ -582,7 +582,7 @@ class GameRenderer:
             pygame.draw.circle(self.screen, COLORS["text_white"], (x, y - 6), 1)
 
         elif entity_type == "enemy":
-            # Enemy - Red background with skull (matches game)
+            # Enemy - Purple background with skull (matches game)
             bg_rect = pygame.Rect(x - 8, y - 8, 16, 16)
             pygame.draw.rect(self.screen, COLORS["enemy"], bg_rect, border_radius=4)
             # Skull

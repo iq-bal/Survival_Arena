@@ -45,11 +45,11 @@ COLORS = {
 
     # Entities
     'obstacle': (60, 65, 75),       # Dark gray walls
-    'player1': (255, 165, 50),      # Orange (emoji face)
-    'player2': (50, 180, 255),      # Cyan blue (second player)
-    'ally1': (100, 200, 255),       # Light blue ally
-    'ally2': (255, 140, 100),       # Light orange ally
-    'enemy': (220, 80, 100),        # Red-pink enemy
+    'player1': (50, 120, 255),      # Blue (Blue Team)
+    'player2': (255, 70, 70),       # Red (Red Team)
+    'ally1': (100, 170, 255),       # Light blue (Blue Team allies)
+    'ally2': (255, 120, 120),       # Light red (Red Team allies)
+    'enemy': (180, 60, 180),        # Purple enemy
     'health': (80, 220, 130),       # Green health
     'coin': (255, 215, 70),         # Gold coin
 
