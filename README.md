@@ -1,6 +1,6 @@
 # AI vs AI Survival Arena
 
-A Pygame-based simulation showcasing three advanced AI algorithms competing in an autonomous survival arena.
+A Pygame-based simulation showcasing three advanced AI algorithms competing in an autonomous survival arena with modern card-based UI and custom PNG assets.
 
 ## Overview
 
@@ -17,6 +17,8 @@ Watch two AI-controlled players compete against each other while navigating enem
 - **4 Enemy Agents** - Attack players using Minimax algorithm
 - **4 Ally Bots** - Collect resources using A* pathfinding (2 per team)
 - **Dynamic Resources** - Health packs and coins spawn throughout the game
+- **Modern UI Design** - Card-based layout with real-time stats and AI decision display
+- **Custom PNG Assets** - Professional game graphics for entities, UI icons, and legends
 - **Real-time Visualization** - Watch AI decisions unfold in Pygame GUI
 
 ## Requirements
@@ -108,21 +110,29 @@ survival_arena/
 ├── main.py                 # Entry point and game loop
 ├── game.py                 # Main game logic and state management
 ├── entities.py             # Entity classes (Player, Ally, Enemy, Resource)
-├── rendering.py            # Pygame visualization
+├── rendering.py            # Pygame visualization with modern UI
+├── assets.py               # PNG asset loader and manager
 ├── constants.py            # Game configuration and constants
-└── ai/
-    ├── __init__.py
-    ├── astar.py           # A* pathfinding implementation
-    ├── minimax.py         # Minimax with alpha-beta pruning
-    └── fuzzy_logic.py     # Fuzzy decision system
+├── ai/
+│   ├── __init__.py
+│   ├── astar.py           # A* pathfinding implementation
+│   ├── minimax.py         # Minimax with alpha-beta pruning
+│   └── fuzzy_logic.py     # Fuzzy decision system
+├── icons/
+│   ├── entities/          # Game entity PNG assets (30×30px)
+│   ├── ui/                # UI icon assets (20×20px)
+│   └── legend/            # Legend icon assets (16×16px)
+└── figures/               # Documentation figures
 ```
 
 ## Technical Details
 
 ### Game Configuration
 - Grid: 20×20 cells
-- Window: 800×800 pixels
-- FPS: 10 (adjustable with UP/DOWN keys)
+- Window: 1400×900 pixels (modern widescreen layout)
+- Grid Display: 700×700 pixels
+- Sidebar: 630 pixels wide
+- FPS: 5 (slower for better AI observation)
 - Max Enemies: 4
 - Max Obstacles: 30
 - Max Resources: 6 health packs + 6 coins
