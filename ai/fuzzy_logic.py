@@ -23,7 +23,7 @@ class FuzzyLogic:
         Returns:
             Membership value between 0.0 and 1.0
         """
-        if value <= left or value >= right:
+        if value < left or value > right:
             return 0.0
         elif value == peak:
             return 1.0
@@ -47,7 +47,7 @@ class FuzzyLogic:
         Returns:
             Membership value between 0.0 and 1.0
         """
-        if value <= left or value >= right:
+        if value < left or value > right:
             return 0.0
         elif left_peak <= value <= right_peak:
             return 1.0
