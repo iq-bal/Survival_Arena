@@ -4,12 +4,12 @@
 WINDOW_WIDTH = 1400
 WINDOW_HEIGHT = 900
 GRID_SIZE = 20
-CELL_SIZE = 35  # pixels per cell
+CELL_SIZE = 30  # pixels per cell
 FPS = 0.5  # Slower speed for better AI watching
 
 # Layout Settings
-GRID_WIDTH = 700  # Width of the game grid area
-GRID_HEIGHT = 700  # Height of the game grid area
+GRID_WIDTH = 600  # Width of the game grid area
+GRID_HEIGHT = 600  # Height of the game grid area
 GRID_OFFSET_X = 20
 GRID_OFFSET_Y = 180
 SIDEBAR_X = 750  # X position where sidebar starts
