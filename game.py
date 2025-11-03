@@ -427,6 +427,33 @@ class SurvivalArenaGame:
             dx = position[0] - nearest_enemy.position[0]
             dy = position[1] - nearest_enemy.position[1]
 
+            # Special case: if at same position, try all directions and pick best
+            if dx == 0 and dy == 0:
+                # Try all four directions, pick the one that maximizes distance from all enemies
+                best_pos = position
+                best_score = -float("inf")
+
+                for direction in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                    test_dx, test_dy = direction
+                    test_pos = (
+                        max(0, min(GRID_SIZE - 1, position[0] + test_dx * 4)),
+                        max(0, min(GRID_SIZE - 1, position[1] + test_dy * 4)),
+                    )
+
+                    # Calculate minimum distance to all enemies from this position
+                    min_enemy_dist = min(
+                        AStarPathfinder.manhattan_distance(test_pos, e.position)
+                        for e in self.enemies
+                    )
+
+                    # Prefer positions not blocked by obstacles and far from enemies
+                    if test_pos not in obstacles and min_enemy_dist > best_score:
+                        best_score = min_enemy_dist
+                        best_pos = test_pos
+
+                return best_pos
+
+            # Normal case: move away from enemy
             # Normalize and scale
             if abs(dx) > abs(dy):
                 dx = 1 if dx > 0 else -1
@@ -436,8 +463,8 @@ class SurvivalArenaGame:
                 dy = 1 if dy > 0 else -1
 
             flee_pos = (
-                max(0, min(GRID_SIZE - 1, position[0] + dx * 3)),
-                max(0, min(GRID_SIZE - 1, position[1] + dy * 3)),
+                max(0, min(GRID_SIZE - 1, position[0] + dx * 4)),
+                max(0, min(GRID_SIZE - 1, position[1] + dy * 4)),
             )
 
             return flee_pos
